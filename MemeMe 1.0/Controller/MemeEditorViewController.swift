@@ -11,7 +11,7 @@ import UIKit
 class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     
-    // MARK: UI Properties
+    // MARK: - UI Properties
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var shareButton: UIBarButtonItem!
@@ -29,14 +29,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     var fontView: FontView!
     
     
-    // MARK: properties
-    
-    let memeTextAttributes: [NSAttributedString.Key: Any] = [
-        NSAttributedString.Key.strokeColor: UIColor.black,
-        NSAttributedString.Key.foregroundColor: UIColor.white,
-        NSAttributedString.Key.font: UIFont(name: "Impact", size: 40)!,
-        NSAttributedString.Key.strokeWidth: -5
-    ]
+    // MARK: - Properties
     
     var isCropModeOn: Bool = false
     
@@ -50,28 +43,26 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     var croppedImageHeightFactor: CGFloat?
     
     
-    // MARK: View Life Cicle
+    // MARK: - View Life Cicle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        topTextField.defaultTextAttributes = memeTextAttributes
-        bottomTextField.defaultTextAttributes = memeTextAttributes
-        topTextField.delegate = self
-        bottomTextField.delegate = self
-        topTextField.textAlignment = .center
-        bottomTextField.textAlignment = .center
+        setUpTextFieldStyle(toTextField: topTextField)
+        setUpTextFieldStyle(toTextField: bottomTextField)
+        
+        cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
         subscribeToKeyboardNotification()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(updateCropView), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
@@ -82,7 +73,22 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     
-    // MARK: UI Functions
+    // MARK: - TextField Styling
+    
+    func setUpTextFieldStyle(toTextField textField: UITextField) {
+        textField.defaultTextAttributes = [
+            .strokeColor: UIColor.black,
+            .foregroundColor: UIColor.white,
+            .font: UIFont(name: "Impact", size: 40)!,
+            .strokeWidth: -5
+        ]
+        textField.textAlignment = .center
+        textField.autocapitalizationType = .allCharacters
+        textField.delegate = self
+    }
+    
+    
+    // MARK: - Image Picking
     
     @IBAction func pickAnImage() {
         chooseAnImage(sourceType: .photoLibrary)
@@ -91,6 +97,57 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     @IBAction func takeAnImage() {
         chooseAnImage(sourceType: .camera)
     }
+    
+    func chooseAnImage(sourceType: UIImagePickerController.SourceType) {
+        let imagePickerController =  UIImagePickerController()
+        imagePickerController.sourceType = sourceType
+        imagePickerController.delegate = self
+        present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        dismiss(animated: true, completion: nil)
+        
+        if let image = info[.originalImage] as? UIImage {
+            orginalImage = image
+            imageView.image = image
+            shareButton.isEnabled = true
+            cropButton.isEnabled = true
+        }
+        
+    }
+    
+
+    // MARK: - Meme Functions
+    
+    func generateMemedImage() -> UIImage {
+        
+        hideElements(hide: true)
+        
+        UIGraphicsBeginImageContext(self.view.frame.size)
+        view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
+        let memedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        hideElements(hide: false)
+        
+        return memedImage
+    }
+    
+    func hideElements(hide: Bool){
+        navBar.isHidden = hide
+        toolBar.isHidden = hide
+        cropButton.isHidden = hide
+        topSafeArea.isHidden = hide
+    }
+    
+    func save() {
+        _ = Meme(topText: topTextField.text!, bottemText: bottomTextField.text!, orginalImage: imageView.image!, memedImage: generateMemedImage())
+    }
+    
+    
+    // MARK: - Share Functions
     
     @IBAction func shareMeme() {
         
@@ -107,6 +164,9 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         }
         present(activityViewController, animated: true, completion: nil)
     }
+    
+    
+    // MARK: - Crop Functions
     
     @IBAction func toggleCropMode() {
 
@@ -142,53 +202,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
            
     }
     
-    // MARK: functions
-    
-    func save() {
-        _ = Meme(topText: topTextField.text!, bottemText: bottomTextField.text!, orginalImage: imageView.image!, memedImage: generateMemedImage())
-    }
-    
-    func chooseAnImage(sourceType: UIImagePickerController.SourceType) {
-        let imagePickerController =  UIImagePickerController()
-        imagePickerController.sourceType = sourceType
-        imagePickerController.delegate = self
-        present(imagePickerController, animated: true, completion: nil)
-    }
-    
-    func generateMemedImage() -> UIImage {
-        
-        hideElements(hide: true)
-        
-        UIGraphicsBeginImageContext(self.view.frame.size)
-        view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
-        let memedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        
-        hideElements(hide: false)
-        
-        return memedImage
-    }
-    
-    func hideElements(hide: Bool){
-        navBar.isHidden = hide
-        toolBar.isHidden = hide
-        cropButton.isHidden = hide
-        topSafeArea.isHidden = hide
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-        dismiss(animated: true, completion: nil)
-        
-        if let image = info[.originalImage] as? UIImage {
-            orginalImage = image
-            imageView.image = image
-            shareButton.isEnabled = true
-            cropButton.isEnabled = true
-        }
-        
-    }
-    
     func crop() {
         
         let xFactor = orginalImage!.size.width / cropView.frame.width
@@ -221,7 +234,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         croppedImageXFactor = cropView.cropAreaView.frame.minX / cropView.frame.width
         croppedImageYFactor = cropView.cropAreaView.frame.minY / cropView.frame.height
     }
-    
     
     func setUpCropView() {
         
@@ -258,7 +270,23 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         }
     }
     
-    // MARK: Keyboard Functions
+    
+    // MARK: - Font View Functions
+    
+    func setUpFontView(activeTextField: UITextField) {
+        if let fontView = fontView {
+            fontView.removeFromSuperview()
+        }
+        fontView = FontView()
+        fontView.activeTextField = activeTextField
+        view.addSubview(fontView)
+        fontView.setUp()
+        fontView.setUpLayout()
+        fontView.isHidden = false
+        fontView.checkFont()
+    }
+    
+    // MARK: - Keyboard Behavour
     
     func subscribeToKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)

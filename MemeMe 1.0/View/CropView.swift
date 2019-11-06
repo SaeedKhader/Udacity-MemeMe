@@ -35,28 +35,10 @@ class CropView: UIView, UIGestureRecognizerDelegate {
     let right = UIView()
     let left = UIView()
     
-    let topRightCorenr = UIView()
-    let topLeftCorenr = UIView()
-    let bottomRightCorenr = UIView()
-    let bottomLeftCorenr = UIView()
-    
-    var topBorderHeight: NSLayoutConstraint?
-    var bottomBorderHeight: NSLayoutConstraint?
-    var leftBorderWidth: NSLayoutConstraint?
-    var rightBorderWidth: NSLayoutConstraint?
-    
-    var topBorderHeightInTopRightCorner: NSLayoutConstraint?
-    var rightBorderWidthInTopRightCorner: NSLayoutConstraint?
-    
-    var topBorderHeightInTopLeftCorner: NSLayoutConstraint?
-    var leftBorderWidthInTopLeftCorner: NSLayoutConstraint?
-    
-    var bottomBorderHeightInBottomRightCorner: NSLayoutConstraint?
-    var rightBorderWidthInBottomRightCorner: NSLayoutConstraint?
-    
-    var bottomBorderHeightInBottomLeftCorner: NSLayoutConstraint?
-    var leftBorderWidthInBottomLeftCorner: NSLayoutConstraint?
-    
+    let topRightCorner = UIView()
+    let topLeftCorner = UIView()
+    let bottomRightCorner = UIView()
+    let bottomLeftCorner = UIView()
     
     let topBackgroud = UIView()
     let bottomBackgroud = UIView()
@@ -91,10 +73,10 @@ class CropView: UIView, UIGestureRecognizerDelegate {
         bottom.isUserInteractionEnabled = bool
         left.isUserInteractionEnabled = bool
         right.isUserInteractionEnabled = bool
-        topRightCorenr.isUserInteractionEnabled = bool
-        topLeftCorenr.isUserInteractionEnabled = bool
-        bottomRightCorenr.isUserInteractionEnabled = bool
-        bottomLeftCorenr.isUserInteractionEnabled = bool
+        topRightCorner.isUserInteractionEnabled = bool
+        topLeftCorner.isUserInteractionEnabled = bool
+        bottomRightCorner.isUserInteractionEnabled = bool
+        bottomLeftCorner.isUserInteractionEnabled = bool
     }
     
     
@@ -143,19 +125,19 @@ class CropView: UIView, UIGestureRecognizerDelegate {
         
         let topRightCornerPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleTopRightCornerPan))
         topRightCornerPanGestureRecognizer.delegate = self
-        topRightCorenr.addGestureRecognizer(topRightCornerPanGestureRecognizer)
+        topRightCorner.addGestureRecognizer(topRightCornerPanGestureRecognizer)
         
         let topLeftCornerPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleTopLeftCornerPan))
         topLeftCornerPanGestureRecognizer.delegate = self
-        topLeftCorenr.addGestureRecognizer(topLeftCornerPanGestureRecognizer)
+        topLeftCorner.addGestureRecognizer(topLeftCornerPanGestureRecognizer)
         
         let bottomRightCornerPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleBottomRightCornerPan))
         bottomRightCornerPanGestureRecognizer.delegate = self
-        bottomRightCorenr.addGestureRecognizer(bottomRightCornerPanGestureRecognizer)
+        bottomRightCorner.addGestureRecognizer(bottomRightCornerPanGestureRecognizer)
         
         let bottomLeftCornerPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleBottomLeftCornerPan))
         bottomLeftCornerPanGestureRecognizer.delegate = self
-        bottomLeftCorenr.addGestureRecognizer(bottomLeftCornerPanGestureRecognizer)
+        bottomLeftCorner.addGestureRecognizer(bottomLeftCornerPanGestureRecognizer)
         
         self.addSubview(cropAreaView)
         
@@ -181,10 +163,10 @@ class CropView: UIView, UIGestureRecognizerDelegate {
         self.superview!.addSubview(right)
         self.superview!.addSubview(left)
         
-        self.superview!.addSubview(topRightCorenr)
-        self.superview!.addSubview(topLeftCorenr)
-        self.superview!.addSubview(bottomRightCorenr)
-        self.superview!.addSubview(bottomLeftCorenr)
+        self.superview!.addSubview(topRightCorner)
+        self.superview!.addSubview(topLeftCorner)
+        self.superview!.addSubview(bottomRightCorner)
+        self.superview!.addSubview(bottomLeftCorner)
         
         self.addSubview(topBackgroud)
         self.addSubview(leftBackgroud)
@@ -199,8 +181,7 @@ class CropView: UIView, UIGestureRecognizerDelegate {
         topBorder.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: 0).isActive = true
         topBorder.leadingAnchor.constraint(equalTo: cropAreaView.leadingAnchor, constant: 0).isActive = true
         topBorder.trailingAnchor.constraint(equalTo: cropAreaView.trailingAnchor, constant: 0).isActive = true
-        topBorderHeight = topBorder.heightAnchor.constraint(equalToConstant: 2)
-        topBorderHeight!.isActive = true
+        topBorder.heightAnchor.constraint(equalToConstant: 2).isActive = true
         
         top.translatesAutoresizingMaskIntoConstraints = false
         top.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: -15).isActive = true
@@ -212,8 +193,7 @@ class CropView: UIView, UIGestureRecognizerDelegate {
         bottomBorder.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 0).isActive = true
         bottomBorder.leadingAnchor.constraint(equalTo: cropAreaView.leadingAnchor, constant: 0).isActive = true
         bottomBorder.trailingAnchor.constraint(equalTo: cropAreaView.trailingAnchor, constant: 0).isActive = true
-        bottomBorderHeight = bottomBorder.heightAnchor.constraint(equalToConstant: 2)
-        bottomBorderHeight!.isActive = true
+        bottomBorder.heightAnchor.constraint(equalToConstant: 2).isActive = true
         
         bottom.translatesAutoresizingMaskIntoConstraints = false
         bottom.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 15).isActive = true
@@ -225,8 +205,7 @@ class CropView: UIView, UIGestureRecognizerDelegate {
         leftBorder.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 0).isActive = true
         leftBorder.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: 0).isActive = true
         leftBorder.leadingAnchor.constraint(equalTo: cropAreaView.leadingAnchor, constant: 0).isActive = true
-        leftBorderWidth = leftBorder.widthAnchor.constraint(equalToConstant: 2)
-        leftBorderWidth!.isActive = true
+        leftBorder.widthAnchor.constraint(equalToConstant: 2).isActive = true
         
         left.translatesAutoresizingMaskIntoConstraints = false
         left.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 0).isActive = true
@@ -239,8 +218,7 @@ class CropView: UIView, UIGestureRecognizerDelegate {
         rightBorder.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 0).isActive = true
         rightBorder.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: 0).isActive = true
         rightBorder.trailingAnchor.constraint(equalTo: cropAreaView.trailingAnchor, constant: 0).isActive = true
-        rightBorderWidth = rightBorder.widthAnchor.constraint(equalToConstant: 2)
-        rightBorderWidth!.isActive = true
+        rightBorder.widthAnchor.constraint(equalToConstant: 2).isActive = true
         
         right.translatesAutoresizingMaskIntoConstraints = false
         right.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 0).isActive = true
@@ -252,81 +230,73 @@ class CropView: UIView, UIGestureRecognizerDelegate {
         topBorderInTopRightCorner.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: 0).isActive = true
         topBorderInTopRightCorner.trailingAnchor.constraint(equalTo: cropAreaView.trailingAnchor, constant: 0).isActive = true
         topBorderInTopRightCorner.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        topBorderHeightInTopRightCorner = topBorderInTopRightCorner.heightAnchor.constraint(equalToConstant: 4)
-        topBorderHeightInTopRightCorner!.isActive = true
+        topBorderInTopRightCorner.heightAnchor.constraint(equalToConstant: 4).isActive = true
         
         rightBorderInTopRightCorner.translatesAutoresizingMaskIntoConstraints = false
         rightBorderInTopRightCorner.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: 0).isActive = true
         rightBorderInTopRightCorner.trailingAnchor.constraint(equalTo: cropAreaView.trailingAnchor, constant: 0).isActive = true
         rightBorderInTopRightCorner.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        rightBorderWidthInTopRightCorner = rightBorderInTopRightCorner.widthAnchor.constraint(equalToConstant: 4)
-        rightBorderWidthInTopRightCorner!.isActive = true
+        rightBorderInTopRightCorner.widthAnchor.constraint(equalToConstant: 4).isActive = true
         
-        topRightCorenr.translatesAutoresizingMaskIntoConstraints = false
-        topRightCorenr.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: -15).isActive = true
-        topRightCorenr.trailingAnchor.constraint(equalTo: cropAreaView.trailingAnchor, constant: 15).isActive = true
-        topRightCorenr.widthAnchor.constraint(equalToConstant: 45).isActive = true
-        topRightCorenr.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        topRightCorner.translatesAutoresizingMaskIntoConstraints = false
+        topRightCorner.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: -15).isActive = true
+        topRightCorner.trailingAnchor.constraint(equalTo: cropAreaView.trailingAnchor, constant: 15).isActive = true
+        topRightCorner.widthAnchor.constraint(equalToConstant: 45).isActive = true
+        topRightCorner.heightAnchor.constraint(equalToConstant: 45).isActive = true
         
         topBorderInTopLeftCorner.translatesAutoresizingMaskIntoConstraints = false
         topBorderInTopLeftCorner.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: 0).isActive = true
         topBorderInTopLeftCorner.leadingAnchor.constraint(equalTo: cropAreaView.leadingAnchor, constant: 0).isActive = true
         topBorderInTopLeftCorner.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        topBorderHeightInTopLeftCorner = topBorderInTopLeftCorner.heightAnchor.constraint(equalToConstant: 4)
-        topBorderHeightInTopLeftCorner!.isActive = true
+        topBorderInTopLeftCorner.heightAnchor.constraint(equalToConstant: 4).isActive = true
         
         leftBorderInTopLeftCorner.translatesAutoresizingMaskIntoConstraints = false
         leftBorderInTopLeftCorner.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: 0).isActive = true
         leftBorderInTopLeftCorner.leadingAnchor.constraint(equalTo: cropAreaView.leadingAnchor, constant: 0).isActive = true
         leftBorderInTopLeftCorner.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        leftBorderWidthInTopLeftCorner = leftBorderInTopLeftCorner.widthAnchor.constraint(equalToConstant: 4)
-        leftBorderWidthInTopLeftCorner!.isActive = true
+        leftBorderInTopLeftCorner.widthAnchor.constraint(equalToConstant: 4).isActive = true
         
-        topLeftCorenr.translatesAutoresizingMaskIntoConstraints = false
-        topLeftCorenr.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: -15).isActive = true
-        topLeftCorenr.leadingAnchor.constraint(equalTo: cropAreaView.leadingAnchor, constant: -15).isActive = true
-        topLeftCorenr.widthAnchor.constraint(equalToConstant: 45).isActive = true
-        topLeftCorenr.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        topLeftCorner.translatesAutoresizingMaskIntoConstraints = false
+        topLeftCorner.topAnchor.constraint(equalTo: cropAreaView.topAnchor, constant: -15).isActive = true
+        topLeftCorner.leadingAnchor.constraint(equalTo: cropAreaView.leadingAnchor, constant: -15).isActive = true
+        topLeftCorner.widthAnchor.constraint(equalToConstant: 45).isActive = true
+        topLeftCorner.heightAnchor.constraint(equalToConstant: 45).isActive = true
         
         bottomBorderInBottomRightCorner.translatesAutoresizingMaskIntoConstraints = false
         bottomBorderInBottomRightCorner.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 0).isActive = true
         bottomBorderInBottomRightCorner.trailingAnchor.constraint(equalTo: cropAreaView.trailingAnchor, constant: 0).isActive = true
         bottomBorderInBottomRightCorner.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        bottomBorderHeightInBottomRightCorner = bottomBorderInBottomRightCorner.heightAnchor.constraint(equalToConstant: 4)
-        bottomBorderHeightInBottomRightCorner!.isActive = true
+        bottomBorderInBottomRightCorner.heightAnchor.constraint(equalToConstant: 4).isActive = true
         
         rightBorderInBottomRightCorner.translatesAutoresizingMaskIntoConstraints = false
         rightBorderInBottomRightCorner.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 0).isActive = true
         rightBorderInBottomRightCorner.trailingAnchor.constraint(equalTo: cropAreaView.trailingAnchor, constant: 0).isActive = true
         rightBorderInBottomRightCorner.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        rightBorderWidthInBottomRightCorner = rightBorderInBottomRightCorner.widthAnchor.constraint(equalToConstant: 4)
-        rightBorderWidthInBottomRightCorner!.isActive = true
+        rightBorderInBottomRightCorner.widthAnchor.constraint(equalToConstant: 4).isActive = true
         
-        bottomRightCorenr.translatesAutoresizingMaskIntoConstraints = false
-        bottomRightCorenr.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 15).isActive = true
-        bottomRightCorenr.trailingAnchor.constraint(equalTo: cropAreaView.trailingAnchor, constant: 15).isActive = true
-        bottomRightCorenr.widthAnchor.constraint(equalToConstant: 45).isActive = true
-        bottomRightCorenr.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        bottomRightCorner.translatesAutoresizingMaskIntoConstraints = false
+        bottomRightCorner.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 15).isActive = true
+        bottomRightCorner.trailingAnchor.constraint(equalTo: cropAreaView.trailingAnchor, constant: 15).isActive = true
+        bottomRightCorner.widthAnchor.constraint(equalToConstant: 45).isActive = true
+        bottomRightCorner.heightAnchor.constraint(equalToConstant: 45).isActive = true
         
         bottomBorderInBottomLeftCorner.translatesAutoresizingMaskIntoConstraints = false
         bottomBorderInBottomLeftCorner.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 0).isActive = true
         bottomBorderInBottomLeftCorner.leadingAnchor.constraint(equalTo: cropAreaView.leadingAnchor, constant: 0).isActive = true
         bottomBorderInBottomLeftCorner.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        bottomBorderHeightInBottomLeftCorner = bottomBorderInBottomLeftCorner.heightAnchor.constraint(equalToConstant: 4)
-        bottomBorderHeightInBottomLeftCorner!.isActive = true
+        bottomBorderInBottomLeftCorner.heightAnchor.constraint(equalToConstant: 4).isActive = true
 
         leftBorderInBottomLeftCorner.translatesAutoresizingMaskIntoConstraints = false
         leftBorderInBottomLeftCorner.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 0).isActive = true
         leftBorderInBottomLeftCorner.leadingAnchor.constraint(equalTo: cropAreaView.leadingAnchor, constant: 0).isActive = true
         leftBorderInBottomLeftCorner.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        leftBorderWidthInBottomLeftCorner = leftBorderInBottomLeftCorner.widthAnchor.constraint(equalToConstant: 4)
-        leftBorderWidthInBottomLeftCorner!.isActive = true
+        leftBorderInBottomLeftCorner.widthAnchor.constraint(equalToConstant: 4).isActive = true
         
-        bottomLeftCorenr.translatesAutoresizingMaskIntoConstraints = false
-        bottomLeftCorenr.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 15).isActive = true
-        bottomLeftCorenr.leadingAnchor.constraint(equalTo: cropAreaView.leadingAnchor, constant: -15).isActive = true
-        bottomLeftCorenr.widthAnchor.constraint(equalToConstant: 45).isActive = true
-        bottomLeftCorenr.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        bottomLeftCorner.translatesAutoresizingMaskIntoConstraints = false
+        bottomLeftCorner.bottomAnchor.constraint(equalTo: cropAreaView.bottomAnchor, constant: 15).isActive = true
+        bottomLeftCorner.leadingAnchor.constraint(equalTo: cropAreaView.leadingAnchor, constant: -15).isActive = true
+        bottomLeftCorner.widthAnchor.constraint(equalToConstant: 45).isActive = true
+        bottomLeftCorner.heightAnchor.constraint(equalToConstant: 45).isActive = true
         
         
         topBackgroud.translatesAutoresizingMaskIntoConstraints = false

@@ -13,16 +13,7 @@ extension MemeEditorViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         activeTextField = textField
-        if let fontView = fontView {
-            fontView.removeFromSuperview()
-        }
-        fontView = FontView()
-        fontView.activeTextField = textField
-        view.addSubview(fontView)
-        fontView.setUp()
-        fontView.setUpLayout()
-        fontView.isHidden = false
-        fontView.checkFont()
+        setUpFontView(activeTextField: textField)
         textField.text = ""
     }
     
