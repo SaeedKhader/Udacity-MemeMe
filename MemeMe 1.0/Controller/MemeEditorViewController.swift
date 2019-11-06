@@ -110,12 +110,23 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         dismiss(animated: true, completion: nil)
         
         if let image = info[.originalImage] as? UIImage {
-            orginalImage = image
-            imageView.image = image
+            orginalImage = resizeImageIfNeeded(image: image)
+            imageView.image = orginalImage
             shareButton.isEnabled = true
             cropButton.isEnabled = true
         }
         
+    }
+    
+    func resizeImageIfNeeded(image: UIImage) -> UIImage {
+        let imgData = NSData(data: image.jpegData(compressionQuality: 1)!)
+        let imageSize: Double = Double(imgData.count) / 1000.0
+        if imageSize > 5000 {
+            let precentage = 5000 / imageSize
+            return image.resize(withPercentage: CGFloat(precentage)) ?? image
+        } else {
+            return image
+        }
     }
     
 
@@ -319,5 +330,17 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         return keyboardSize.cgRectValue.height
     }
 
+}
+
+
+// MARK: - UIImage resize method
+
+extension UIImage {
+    func resize(withPercentage percentage: CGFloat) -> UIImage? {
+           let canvas = CGSize(width: size.width * percentage, height: size.height * percentage)
+           return UIGraphicsImageRenderer(size: canvas, format: imageRendererFormat).image {
+               _ in draw(in: CGRect(origin: .zero, size: canvas))
+           }
+       }
 }
 
