@@ -11,7 +11,15 @@ import UIKit
 
 struct Meme {
     var topText: String
+    var topTextAttributes: [NSAttributedString.Key : Any]
     var bottemText: String
+    var bottomTextAttributes: [NSAttributedString.Key : Any]
     var orginalImage: UIImage
+    var croppedImage: UIImage
     var memedImage: UIImage
+    
+    var croppedImageXFactor: CGFloat
+    var croppedImageYFactor: CGFloat
+    var croppedImageWidthFactor: CGFloat
+    var croppedImageHeightFactor: CGFloat
 }

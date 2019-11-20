@@ -42,6 +42,10 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     var croppedImageWidthFactor: CGFloat?
     var croppedImageHeightFactor: CGFloat?
     
+    var isNewMeme: Bool = true
+    var memeToEdit: Meme?
+    var memeToEditIndex: IndexPath?
+    
     
     // MARK: - View Life Cicle
     
@@ -52,6 +56,8 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         setUpTextFieldStyle(toTextField: bottomTextField)
         
         cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
+        
+        prepareMemeToEdit()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,6 +76,24 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         super.viewWillDisappear(animated)
         
         unsubscribeToKeyboardNotificaiton()
+    }
+    
+    
+    func prepareMemeToEdit() {
+        if let meme = memeToEdit {
+            topTextField.text = meme.topText
+            topTextField.defaultTextAttributes = meme.topTextAttributes
+            bottomTextField.text = meme.bottemText
+            bottomTextField.defaultTextAttributes = meme.bottomTextAttributes
+            orginalImage = meme.orginalImage
+            imageView.image = meme.croppedImage
+            croppedImageXFactor = meme.croppedImageXFactor
+            croppedImageYFactor = meme.croppedImageYFactor
+            croppedImageWidthFactor = meme.croppedImageWidthFactor
+            croppedImageHeightFactor = meme.croppedImageHeightFactor
+            cropButton.isEnabled = true
+            shareButton.isEnabled = true
+        }
     }
     
     
@@ -153,8 +177,30 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         topSafeArea.isHidden = hide
     }
     
-    func save() {
-        _ = Meme(topText: topTextField.text!, bottemText: bottomTextField.text!, orginalImage: imageView.image!, memedImage: generateMemedImage())
+    func save(memedImage: UIImage) {
+        
+        let meme = Meme(
+            topText: topTextField.text!,
+            topTextAttributes: topTextField.defaultTextAttributes,
+            bottemText: bottomTextField.text!,
+            bottomTextAttributes: bottomTextField.defaultTextAttributes,
+            orginalImage: orginalImage!,
+            croppedImage: imageView.image!,
+            memedImage: memedImage,
+            croppedImageXFactor: croppedImageXFactor ?? 0,
+            croppedImageYFactor: croppedImageYFactor ?? 0,
+            croppedImageWidthFactor: croppedImageWidthFactor ?? 1,
+            croppedImageHeightFactor: croppedImageHeightFactor ?? 1
+        )
+        
+        if isNewMeme {
+            (UIApplication.shared.delegate as! AppDelegate).memes.append(meme)
+        } else {
+            (UIApplication.shared.delegate as! AppDelegate).memes[memeToEditIndex!.row] = meme
+        }
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
+        
     }
     
     
@@ -170,12 +216,16 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         let activityViewController = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
         activityViewController.completionWithItemsHandler = { (type,completed,items,error) in
             if ( completed ) {
-                self.save()
+                self.save(memedImage: memedImage)
             }
         }
+        
         present(activityViewController, animated: true, completion: nil)
     }
     
+    @IBAction func dismessMemeEditorView(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
     
     // MARK: - Crop Functions
     

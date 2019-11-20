@@ -68,8 +68,6 @@ extension MemeEditorViewController {
             self.translatesAutoresizingMaskIntoConstraints = false
             self.trailingAnchor.constraint(equalTo: self.superview!.trailingAnchor, constant: -10).isActive = true
             self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor, constant: 10).isActive = true
-            self.heightAnchor.constraint(equalToConstant: 47).isActive = true
-            
             bottomLayout = self.bottomAnchor.constraint(equalTo: self.superview!.bottomAnchor, constant: 0)
             bottomLayout?.isActive = true
             
@@ -82,8 +80,6 @@ extension MemeEditorViewController {
             button.titleLabel?.font = font
             button.titleLabel?.textAlignment = .center
             button.layer.cornerRadius = 5
-            let widthContraints =  NSLayoutConstraint(item: button, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 39)
-            NSLayoutConstraint.activate([widthContraints])
         }
 
         func checkFont() {
